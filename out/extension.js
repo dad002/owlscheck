@@ -25,6 +25,15 @@ function activate(context) {
     vscode.commands.registerCommand('owlscheck.startOwlsCheck', () => {
         vscode.window.showInformationMessage('Hello World from OwlsCheck!');
     });
+    vscode.commands.registerCommand('owlscheck.deleteCheckList', () => {
+        fs.writeFile("owlsCheckData.txt", "owlsCheck Data File.", (err) => {
+            if (err) {
+                throw err;
+            }
+            ;
+            console.log("File cleared");
+        });
+    });
     vscode.commands.registerCommand('owlscheck.openCheckList', () => {
         let stringData = fs.readFileSync('owlsCheckData.txt', 'utf-8');
         let Data = stringData.split('\n');

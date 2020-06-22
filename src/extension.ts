@@ -25,8 +25,29 @@ export function activate(context: vscode.ExtensionContext) {
 	bar.command = "owlscheck.openCheckList";
 	bar.show();
 
+<<<<<<< HEAD
+=======
+	let bar_2 = vscode.window.createStatusBarItem();
+	bar_2.text ="$(chrome-close)";
+	bar_2.command ="owlscheck.deleteCheckList";
+	bar_2.show();
+
+
+	// The command has been defined in the package.json file
+	// Now provide the implementation of the command with registerCommand
+	// The commandId parameter must match the command field in package.json
+>>>>>>> features_v1.0
 	vscode.commands.registerCommand('owlscheck.startOwlsCheck', () => {
 		vscode.window.showInformationMessage('Hello World from OwlsCheck!');
+	});
+
+	vscode.commands.registerCommand('owlscheck.deleteCheckList',()=>{
+		fs.writeFile("owlsCheckData.txt", "owlsCheck Data File.", (err) => {
+			if (err) {
+				throw err;
+			};
+			console.log("File cleared");
+		});
 	});
 
 	vscode.commands.registerCommand('owlscheck.openCheckList', () => {
