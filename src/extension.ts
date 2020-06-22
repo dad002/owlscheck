@@ -8,7 +8,7 @@ import * as fs from 'fs';
 export function activate(context: vscode.ExtensionContext) {
 
 	if (!fs.existsSync("owlsCheckData.txt")){
-		fs.writeFile("owlsCheckData.txt", "owlsCheck Data File.", (err) => {
+		fs.writeFile("owlsCheckData.txt", "owlsCheck Data File.\n", (err) => {
 			if (err) {
 				throw err;
 			};
@@ -21,14 +21,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 	let bar = vscode.window.createStatusBarItem();
-	bar.text = "$(calendar)";
+	bar.text = "$(checklist)";
 	bar.command = "owlscheck.openCheckList";
 	bar.show();
 
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
 	vscode.commands.registerCommand('owlscheck.startOwlsCheck', () => {
 		vscode.window.showInformationMessage('Hello World from OwlsCheck!');
 	});
@@ -46,14 +42,18 @@ export function activate(context: vscode.ExtensionContext) {
 			iconPath: new vscode.ThemeIcon("add")
 		};
 
+		const correctButton: vscode.QuickInputButton = {
+			iconPath: new vscode.ThemeIcon("pass")
+		};
+
 		const delButton: vscode.QuickInputButton = {
-			iconPath: new vscode.ThemeIcon("chrome-minimize")
+			iconPath: new vscode.ThemeIcon("trash")
 		};
 
 		let tmpItemArr:vscode.QuickPickItem[] = [];
 		Data.forEach(element => {
-			let elemData = element.split('%');
-			if(elemData[2] !== 'completed'){
+			if (element !== "") {
+				let elemData = element.split('%');
 				const tmp : vscode.QuickPickItem = {
 					alwaysShow: true,
 					description:elemData[2],
@@ -64,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		});
 		
-		qp.buttons = [addButton, delButton];
+		qp.buttons = [addButton, correctButton, delButton];
 		qp.items = tmpItemArr;
 		
 
@@ -85,7 +85,7 @@ export function activate(context: vscode.ExtensionContext) {
 					qp.hide();
 				}
 			}
-			if (event === delButton) {
+			if (event === correctButton) {
 
 				let elem = qp.value;
 				if (elem !== '') {
@@ -96,9 +96,27 @@ export function activate(context: vscode.ExtensionContext) {
 						return false;
 					});
 					let partStr = someStr?.slice(0, someStr.lastIndexOf('%'));
-					if (someStr !== undefined){
+					if (someStr !== undefined) {
 						let newStr = stringData.replace(new RegExp(someStr, 'g'),partStr + "% Completed");
-						fs.writeFileSync('owlsCheckData.txt',newStr);
+						fs.writeFileSync('owlsCheckData.txt', newStr);
+					}
+					qp.hide();
+					
+				}
+				vscode.window.showInformationMessage('Item status changed');
+			}
+			if (event === delButton) {
+				let elem = qp.value;
+				if (elem !== '') {
+					let someStr = Data.find((tmp) => {
+						if(tmp.indexOf(elem) !== -1){
+							return true;
+						}
+						return false;
+					});
+					if (someStr !== undefined) {
+						let newStr = stringData.replace(new RegExp(someStr, 'g'),"");
+						fs.writeFileSync('owlsCheckData.txt', newStr);
 					}
 					qp.hide();
 					
@@ -111,5 +129,4 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 }
 
-// this method is called when your extension is deactivated
 export function deactivate() {}
