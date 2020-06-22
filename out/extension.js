@@ -22,11 +22,18 @@ function activate(context) {
     bar.text = "$(checklist)";
     bar.command = "owlscheck.openCheckList";
     bar.show();
+    let bar_2 = vscode.window.createStatusBarItem();
+    bar_2.text = "$(chrome-close)";
+    bar_2.command = "owlscheck.deleteCheckList";
+    bar_2.show();
+    // The command has been defined in the package.json file
+    // Now provide the implementation of the command with registerCommand
+    // The commandId parameter must match the command field in package.json
     vscode.commands.registerCommand('owlscheck.startOwlsCheck', () => {
         vscode.window.showInformationMessage('Hello World from OwlsCheck!');
     });
     vscode.commands.registerCommand('owlscheck.deleteCheckList', () => {
-        fs.writeFile("owlsCheckData.txt", "owlsCheck Data File.", (err) => {
+        fs.writeFile("owlsCheckData.txt", "owlsCheck Data File.\n", (err) => {
             if (err) {
                 throw err;
             }
@@ -111,10 +118,10 @@ function activate(context) {
                     if (someStr !== undefined) {
                         let newStr = stringData.replace(new RegExp(someStr, 'g'), "");
                         fs.writeFileSync('owlsCheckData.txt', newStr);
+                        vscode.window.showInformationMessage('Item deleted');
                     }
                     qp.hide();
                 }
-                vscode.window.showInformationMessage('Item deleted');
             }
         });
         qp.show();

@@ -39,7 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	vscode.commands.registerCommand('owlscheck.deleteCheckList',()=>{
-		fs.writeFile("owlsCheckData.txt", "owlsCheck Data File.", (err) => {
+		fs.writeFile("owlsCheckData.txt", "owlsCheck Data File.\n", (err) => {
 			if (err) {
 				throw err;
 			};
@@ -135,11 +135,11 @@ export function activate(context: vscode.ExtensionContext) {
 					if (someStr !== undefined) {
 						let newStr = stringData.replace(new RegExp(someStr, 'g'),"");
 						fs.writeFileSync('owlsCheckData.txt', newStr);
+						vscode.window.showInformationMessage('Item deleted');
 					}
 					qp.hide();
 					
 				}
-				vscode.window.showInformationMessage('Item deleted');
 			}
 		});
 
