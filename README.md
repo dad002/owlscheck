@@ -1,4 +1,4 @@
-# Сheck list
+# Owlscheck
 ## Plugin for VS code where you create chek list for your tasks 
 * In this plugin you can add tasks in check list 
 * And you can mark your tasks complete (delete task)
