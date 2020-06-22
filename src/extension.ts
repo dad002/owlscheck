@@ -90,17 +90,29 @@ export function activate(context: vscode.ExtensionContext) {
 			if (event === addButton) {
 				
 				let elem = qp.value;
+				let good = true;
 				if (elem !== '') {
 					let elemData = elem.split('%');
-					if (elemData.length === 1) {
-						fs.appendFileSync('owlsCheckData.txt',elemData[0] + "%%inProgress\n");
-						vscode.window.showInformationMessage('item added');
+					Data.forEach(element => {
+						if (element.indexOf(elem) !== -1){
+							good = false;
+						} 
+					});
+
+					if (good) {
+						if (elemData.length === 1) {
+							fs.appendFileSync('owlsCheckData.txt',elemData[0] + "%%inProgress\n");
+							vscode.window.showInformationMessage('item added');
+						}
+						if (elemData.length === 2) {
+							fs.appendFileSync('owlsCheckData.txt',elemData[0] + "%" + elemData[1] + "%inProgress\n");
+							vscode.window.showInformationMessage('item added');
+						}
+						qp.hide();
+					} else {
+
+						vscode.window.showInformationMessage("You have such item");
 					}
-					if (elemData.length === 2) {
-						fs.appendFileSync('owlsCheckData.txt',elemData[0] + "%" + elemData[1] + "%inProgress\n");
-						vscode.window.showInformationMessage('item added');
-					}
-					qp.hide();
 				}
 			}
 			if (event === correctButton) {
@@ -117,11 +129,11 @@ export function activate(context: vscode.ExtensionContext) {
 					if (someStr !== undefined) {
 						let newStr = stringData.replace(new RegExp(someStr, 'g'),partStr + "% Completed");
 						fs.writeFileSync('owlsCheckData.txt', newStr);
+						vscode.window.showInformationMessage('Item status changed');
 					}
 					qp.hide();
 					
 				}
-				vscode.window.showInformationMessage('Item status changed');
 			}
 			if (event === delButton) {
 				let elem = qp.value;
